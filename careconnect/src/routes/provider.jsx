@@ -1,0 +1,2 @@
+import { createFileRoute } from "@tanstack/react-router";import ProviderWorkspace from "@/pages/ProviderWorkspace";
+export const Route=createFileRoute("/provider")({head:()=>({meta:[{title:"Provider Workspace — AtDoor"},{name:"description",content:"Temporary AtDoor service provider workspace preview."},{property:"og:title",content:"Provider Workspace — AtDoor"},{property:"og:description",content:"Temporary AtDoor service provider workspace preview."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:ProviderWorkspace});

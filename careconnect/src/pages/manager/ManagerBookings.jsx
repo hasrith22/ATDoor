@@ -1,0 +1,1 @@
+import ManagerOperations from "./ManagerOperations";export default function ManagerBookings(){return <ManagerOperations title="Booking Management" copy="Search, filter, and manage every stage of today's bookings."/>}
