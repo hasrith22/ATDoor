@@ -1,4 +1,10 @@
 {
+  "name": "atdoor",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix careconnect install && npm --prefix careconnect run build",
+    "start": "node backend/server.js"
+  },
   "dependencies": {
     "mongodb": "^7.7.0"
   }
