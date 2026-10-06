@@ -251,20 +251,36 @@ export default function Login() {
 
           {/* Credentials Reference Helper */}
           <div className="mt-6 border-t border-border pt-4 text-center">
-            <p className="text-xs text-muted-foreground font-medium">
-              Registered platform credentials for testing:
+            <p className="text-xs text-muted-foreground font-medium mb-2">
+              Registered platform credentials (click to auto-fill):
             </p>
-            <div className="mt-2 grid grid-cols-2 gap-1 text-[11px] text-muted-foreground text-left bg-muted/50 p-2.5 rounded-lg border border-border">
-              <div><strong className="text-foreground">Admin:</strong> admin@atdoor.com</div>
-              <div><strong className="text-foreground">Pass:</strong> Admin@123</div>
-              <div><strong className="text-foreground">Provider:</strong> provider1@atdoor.com</div>
-              <div><strong className="text-foreground">Pass:</strong> Provider@123</div>
-              <div><strong className="text-foreground">Manager:</strong> operations@atdoor.com</div>
-              <div><strong className="text-foreground">Pass:</strong> Ops@123</div>
-              <div><strong className="text-foreground">Support:</strong> support@atdoor.com</div>
-              <div><strong className="text-foreground">Pass:</strong> Support@123</div>
-              <div><strong className="text-foreground">Customer:</strong> customer@atdoor.com</div>
-              <div><strong className="text-foreground">Pass:</strong> Customer@123</div>
+            <div className="space-y-1.5 text-[11px] text-muted-foreground text-left">
+              {[
+                { role: "Admin", email: "admin@atdoor.com", pass: "Admin@123" },
+                { role: "Provider", email: "provider1@atdoor.com", pass: "Provider@123" },
+                { role: "Manager", email: "operations@atdoor.com", pass: "Ops@123" },
+                { role: "Support", email: "support@atdoor.com", pass: "Support@123" },
+                { role: "Customer", email: "customer@atdoor.com", pass: "Customer@123" },
+              ].map((c) => (
+                <button
+                  key={c.role}
+                  type="button"
+                  onClick={() => {
+                    setIsRegister(false);
+                    setEmail(c.email);
+                    setPassword(c.pass);
+                  }}
+                  className="w-full flex items-center justify-between p-2 rounded-lg bg-muted/40 hover:bg-primary/10 border border-border hover:border-primary/30 transition text-left cursor-pointer group"
+                >
+                  <div>
+                    <strong className="text-foreground group-hover:text-primary font-bold">{c.role}:</strong>{" "}
+                    <span className="font-mono text-muted-foreground">{c.email}</span>
+                  </div>
+                  <div className="text-xs font-mono font-semibold text-primary/80">
+                    {c.pass}
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
         </div>
