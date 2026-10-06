@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import {
   AlertCircle,
@@ -47,7 +47,7 @@ export function ManagerSettingsModal({ open, onClose, defaultTab = "profile" }) 
   const handleLogout = () => {
     onClose();
     logout();
-    navigate({ to: "/login" });
+    navigate("/login");
   };
 
   const handleSaveProfile = async (e) => {

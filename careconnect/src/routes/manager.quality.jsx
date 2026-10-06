@@ -1,2 +1,0 @@
-import { createFileRoute } from "@tanstack/react-router";import ManagerQuality from "@/pages/manager/ManagerQuality";
-export const Route=createFileRoute("/manager/quality")({head:()=>({meta:[{title:"Service Quality — AtDoor"},{name:"description",content:"Monitor AtDoor service quality and customer outcomes."},{property:"og:title",content:"Service Quality — AtDoor"},{property:"og:description",content:"Monitor AtDoor service quality and customer outcomes."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:ManagerQuality});

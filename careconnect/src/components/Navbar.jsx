@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Bell,
   Bookmark,
@@ -32,7 +32,8 @@ const nav = [
 
 export function Navbar() {
   const { user, logout } = useAuth();
-  const path = useRouterState({ select: (state) => state.location.pathname });
+  const location = useLocation();
+  const path = location.pathname;
   const navigate = useNavigate();
   const [mobile, setMobile] = useState(false);
   const [panel, setPanel] = useState(null);
@@ -51,13 +52,13 @@ export function Navbar() {
     setPanel(null);
     if (label === "Logout") {
       logout();
-      navigate({ to: "/login" });
+      navigate("/login");
     } else if (label === "My Bookings") {
-      navigate({ to: "/bookings" });
+      navigate("/bookings");
     } else if (label === "Help & Support") {
-      navigate({ to: "/help" });
+      navigate("/help");
     } else if (label === "Sign In / Switch") {
-      navigate({ to: "/login" });
+      navigate("/login");
     }
   };
 
@@ -71,7 +72,7 @@ export function Navbar() {
           <span className="text-xl font-black tracking-normal">AtDoor</span>
         </Link>
         <nav className="hidden md:block" aria-label="Primary navigation">
-          <FluidTabs tabs={nav} active={path} onChange={(to) => navigate({ to })} layoutId="navbar-active-pill" />
+          <FluidTabs tabs={nav} active={path} onChange={(to) => navigate(to)} layoutId="navbar-active-pill" />
         </nav>
         <div className="flex items-center gap-2">
           <div className="hidden lg:block">
@@ -167,7 +168,7 @@ export function Navbar() {
                 </AnimatePresence>
               </>
             ) : (
-              <Button onClick={() => navigate({ to: "/login" })} className="font-bold shadow-xs">
+              <Button onClick={() => navigate("/login")} className="font-bold shadow-xs">
                 <LogIn className="size-4" /> Sign In
               </Button>
             )}

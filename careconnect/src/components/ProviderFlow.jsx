@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, BadgeCheck, Check, CheckCircle2, Clock3, Search, ShieldCheck, Sparkles, Star, Wrench, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -611,7 +611,7 @@ function BookingSuccess({ provider, bookingResult, aiDiagnosis, onDone }) {
           className="font-bold shadow-sm flex-1"
           onClick={() => {
             onDone();
-            navigate({ to: "/bookings" });
+            navigate("/bookings");
           }}
         >
           View My Bookings

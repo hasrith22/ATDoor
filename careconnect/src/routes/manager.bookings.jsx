@@ -1,2 +1,0 @@
-import { createFileRoute } from "@tanstack/react-router";import ManagerBookings from "@/pages/manager/ManagerBookings";
-export const Route=createFileRoute("/manager/bookings")({head:()=>({meta:[{title:"Manager Bookings — AtDoor"},{name:"description",content:"Search and manage AtDoor booking lifecycles."},{property:"og:title",content:"Manager Bookings — AtDoor"},{property:"og:description",content:"Search and manage AtDoor booking lifecycles."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:ManagerBookings});

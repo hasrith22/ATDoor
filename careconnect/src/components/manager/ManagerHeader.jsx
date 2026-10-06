@@ -1,4 +1,4 @@
-import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Bell, ChevronDown, HelpCircle, LogOut, Menu, Search, Settings, User } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -23,7 +23,8 @@ const meta = {
 };
 
 export function ManagerHeader({ onMenu }) {
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const location = useLocation();
+  const path = location.pathname;
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [panel, setPanel] = useState(null); // null | "notes" | "profile"
@@ -60,7 +61,7 @@ export function ManagerHeader({ onMenu }) {
     setPanel(null);
     if (label === "Logout") {
       logout();
-      navigate({ to: "/login" });
+      navigate("/login");
     } else if (label === "Profile") {
       setSettingsTab("profile");
       setSettingsOpen(true);
@@ -70,7 +71,7 @@ export function ManagerHeader({ onMenu }) {
     } else if (label === "Notifications") {
       setPanel("notes");
     } else if (label === "Help") {
-      navigate({ to: "/manager/help" });
+      navigate("/manager/help");
     }
   };
 

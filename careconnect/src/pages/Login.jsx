@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
 import { Lock, Mail, Phone, User, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,19 +20,19 @@ export default function Login() {
   const redirectByRole = (userRole) => {
     switch (userRole) {
       case "ADMIN":
-        navigate({ to: "/admin" });
+        navigate("/admin");
         break;
       case "OPERATIONS_MANAGER":
-        navigate({ to: "/manager" });
+        navigate("/manager");
         break;
       case "SUPPORT_AGENT":
-        navigate({ to: "/support" });
+        navigate("/support");
         break;
       case "PROVIDER":
-        navigate({ to: "/provider" });
+        navigate("/provider");
         break;
       default:
-        navigate({ to: "/" });
+        navigate("/");
     }
   };
 

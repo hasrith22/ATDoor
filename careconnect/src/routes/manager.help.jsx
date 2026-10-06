@@ -1,2 +1,0 @@
-import { createFileRoute } from "@tanstack/react-router";import ManagerHelp from "@/pages/manager/ManagerHelp";
-export const Route=createFileRoute("/manager/help")({head:()=>({meta:[{title:"Operations Help — AtDoor"},{name:"description",content:"Guidance for AtDoor operations manager workflows."},{property:"og:title",content:"Operations Help — AtDoor"},{property:"og:description",content:"Guidance for AtDoor operations manager workflows."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:ManagerHelp});

@@ -4,7 +4,7 @@ The client-side single page application for **AtDoor** home services marketplace
 
 ## Tech Stack
 - **Framework**: React.js with JavaScript (`.jsx` / `.js`)
-- **Routing**: TanStack Router
+- **Routing**: React Router (`react-router-dom`)
 - **Styling**: Tailwind CSS & Vanilla CSS Design Tokens
 - **Icons**: Lucide Icons & React Icons
 - **HTTP Client**: Axios with JWT Bearer Interceptors

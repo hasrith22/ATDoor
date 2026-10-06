@@ -1,4 +1,4 @@
-import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   BriefcaseBusiness,
   ChevronDown,
@@ -33,7 +33,8 @@ const roleCredentials = {
 export function RoleSwitcher({ compact = false }) {
   const navigate = useNavigate();
   const { user, isAuthenticated, login, logout } = useAuth();
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const location = useLocation();
+  const path = location.pathname;
   const [open, setOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
 
@@ -57,13 +58,13 @@ export function RoleSwitcher({ compact = false }) {
         }
       }
     }
-    navigate({ to: ws.to });
+    navigate(ws.to);
   };
 
   const handleLogout = () => {
     setOpen(false);
     logout();
-    navigate({ to: "/login" });
+    navigate("/login");
   };
 
   return (
@@ -151,7 +152,7 @@ export function RoleSwitcher({ compact = false }) {
               <button
                 onClick={() => {
                   setOpen(false);
-                  navigate({ to: "/login" });
+                  navigate("/login");
                 }}
                 className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-bold text-primary hover:bg-primary/10 transition-colors"
               >

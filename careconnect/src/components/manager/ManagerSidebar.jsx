@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   BookOpen,
   CalendarRange,
@@ -33,14 +33,15 @@ export const managerNav = [
 ];
 
 function SidebarContent({ close, onOpenSettings }) {
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const location = useLocation();
+  const path = location.pathname;
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
     if (close) close();
     logout();
-    navigate({ to: "/login" });
+    navigate("/login");
   };
 
   return (

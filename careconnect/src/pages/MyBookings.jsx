@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
 import {
   AlertTriangle,
   CalendarClock,
@@ -164,7 +164,7 @@ export default function MyBookings() {
           <div className="rounded-xl border border-dashed border-border bg-card/50 p-12 text-center">
             <p className="font-bold text-foreground">No {active} bookings found</p>
             <p className="mt-1 text-sm text-muted-foreground">Book a home service from our dashboard or services catalogue.</p>
-            <Button className="mt-4" onClick={() => nav({ to: "/" })}>
+            <Button className="mt-4" onClick={() => nav("/")}>
               Explore Services
             </Button>
           </div>
@@ -206,7 +206,7 @@ export default function MyBookings() {
               <div className="mt-6 flex flex-wrap gap-2 border-t border-border pt-5">
                 {active === "active" && (
                   <>
-                    <Button onClick={() => nav({ to: "/tracking" })}>
+                    <Button onClick={() => nav("/tracking")}>
                       <MapPin className="size-4" />
                       Live Track
                     </Button>
