@@ -1,0 +1,9 @@
+{
+  "outputDirectory": "careconnect/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
