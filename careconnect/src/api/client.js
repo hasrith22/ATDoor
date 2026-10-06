@@ -1,17 +1,45 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+export const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  const isBrowser = typeof window !== "undefined";
+  const isPublicDomain =
+    isBrowser &&
+    window.location.hostname !== "localhost" &&
+    window.location.hostname !== "127.0.0.1";
+
+  // When deployed on Vercel / production, route to live Render backend
+  if (isPublicDomain || import.meta.env.PROD) {
+    if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1")) {
+      return "https://atdoor.onrender.com/api";
+    }
+  }
+
+  const raw = (envUrl || "http://localhost:5000/api").trim().replace(/\/+$/, "");
+  return raw.endsWith("/api") ? raw : `${raw}/api`;
+};
 
 export const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getApiBaseUrl(),
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Attach JWT token to requests if present in localStorage (client-side only)
+// Attach JWT token & auto-redirect localhost calls to production backend when hosted on Vercel
 apiClient.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
+    const isPublicDomain =
+      window.location.hostname !== "localhost" &&
+      window.location.hostname !== "127.0.0.1";
+
+    if (
+      isPublicDomain &&
+      (!config.baseURL || config.baseURL.includes("localhost") || config.baseURL.includes("127.0.0.1"))
+    ) {
+      config.baseURL = "https://atdoor.onrender.com/api";
+    }
+
     try {
       const token = localStorage.getItem("atdoor_token");
       if (token) {

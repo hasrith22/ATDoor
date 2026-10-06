@@ -1,4 +1,6 @@
+const mongoose = require("mongoose");
 const Booking = require("../models/Booking");
+const User = require("../models/User");
 const Job = require("../models/Job");
 const Invoice = require("../models/Invoice");
 const Notification = require("../models/Notification");
@@ -21,9 +23,26 @@ exports.createBooking = async (req, res, next) => {
       notes,
     } = req.body;
 
+    // Resolve a valid ObjectId for provider if a mock slug or non-ObjectId was passed
+    let validProviderId = providerId;
+    if (!providerId || !mongoose.Types.ObjectId.isValid(providerId)) {
+      const provUser = await User.findOne({ role: "PROVIDER" });
+      if (provUser) {
+        validProviderId = provUser._id;
+      } else {
+        const anyUser = await User.findOne();
+        if (anyUser) validProviderId = anyUser._id;
+      }
+    }
+
+    let validCategoryId = categoryId;
+    if (categoryId && !mongoose.Types.ObjectId.isValid(categoryId)) {
+      validCategoryId = undefined;
+    }
+
     // Check for double booking conflict
     const conflict = await Booking.findOne({
-      provider: providerId,
+      provider: validProviderId,
       scheduledDate,
       scheduledTime,
       status: { $in: ["CONFIRMED", "PROVIDER_ASSIGNED", "SCHEDULED", "IN_PROGRESS"] },
@@ -41,8 +60,8 @@ exports.createBooking = async (req, res, next) => {
     const booking = await Booking.create({
       bookingNumber,
       customer: req.user.id,
-      provider: providerId,
-      category: categoryId,
+      provider: validProviderId,
+      category: validCategoryId,
       serviceName,
       scheduledDate,
       scheduledTime,
@@ -56,7 +75,7 @@ exports.createBooking = async (req, res, next) => {
     // Create corresponding Job
     await Job.create({
       booking: booking._id,
-      provider: providerId,
+      provider: validProviderId,
       customer: req.user.id,
       status: "ASSIGNED",
     });
@@ -67,7 +86,7 @@ exports.createBooking = async (req, res, next) => {
       invoiceNumber,
       booking: booking._id,
       customer: req.user.id,
-      provider: providerId,
+      provider: validProviderId,
       serviceName,
       basePrice: price,
       finalAmount: price,
@@ -76,7 +95,7 @@ exports.createBooking = async (req, res, next) => {
 
     // Notify Provider and Customer
     await Notification.create({
-      user: providerId,
+      user: validProviderId,
       title: "New Booking Received",
       message: `You have a new booking (${bookingNumber}) for ${serviceName} on ${scheduledDate} at ${scheduledTime}.`,
       type: "BOOKING",

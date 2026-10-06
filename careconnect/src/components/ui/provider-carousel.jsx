@@ -3,10 +3,28 @@ import { AnimatePresence, motion } from "motion/react";
 import { BadgeCheck, Clock3, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function ProviderCarousel({ providers, onDetails, onBook }) {
+export function ProviderCarousel({ providers = [], onDetails, onBook, onSelect }) {
   const [activeId, setActiveId] = useState(null);
   const activeProvider = providers.find((item) => item.id === activeId);
   const remainingProviders = providers.filter((item) => item.id !== activeId);
+
+  const handleDetails = (item) => {
+    if (typeof onDetails === "function") {
+      onDetails(item);
+    } else if (typeof onSelect === "function") {
+      onSelect(item);
+    }
+  };
+
+  const handleBook = (item) => {
+    if (typeof onBook === "function") {
+      onBook(item);
+    } else if (typeof onDetails === "function") {
+      onDetails(item);
+    } else if (typeof onSelect === "function") {
+      onSelect(item);
+    }
+  };
 
   if (!providers.length) {
     return <div className="rounded-lg border border-border bg-muted p-8 text-center text-muted-foreground">No providers match your search.</div>;
@@ -38,7 +56,7 @@ export function ProviderCarousel({ providers, onDetails, onBook }) {
                 <div className="mt-6 grid grid-cols-2 gap-4 border-y border-border py-5 text-sm"><div><p className="text-xs text-muted-foreground">Availability</p><p className="mt-1 font-bold">{activeProvider.availability}</p></div><div><p className="text-xs text-muted-foreground">Starting at</p><p className="mt-1 text-xl font-black">₹{activeProvider.price}</p></div></div>
                 <p className="mt-5 flex items-center gap-2 text-sm text-muted-foreground"><Clock3 className="size-4" />{activeProvider.response}</p>
               </div>
-              <div className="mt-7 grid grid-cols-2 gap-3"><Button variant="outline" onClick={() => onDetails(activeProvider)}>View Details</Button><Button onClick={() => onBook(activeProvider)}>Book Service</Button></div>
+              <div className="mt-7 grid grid-cols-2 gap-3"><Button variant="outline" onClick={() => handleDetails(activeProvider)}>View Details</Button><Button onClick={() => handleBook(activeProvider)}>Book Service</Button></div>
             </div>
           </motion.article>
         )}

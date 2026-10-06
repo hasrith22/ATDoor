@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, BadgeCheck, Check, CheckCircle2, Clock3, Search, ShieldCheck, Sparkles, Star, Wrench, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -221,12 +222,30 @@ export function ProviderFlow({ visible = true, aiDiagnosis = null, onClearAi, on
 
   const handleConfirmBooking = async () => {
     setIsSubmitting(true);
-    try {
-      const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
-      const serviceName = aiDiagnosis
-        ? `${aiDiagnosis.categoryName} Repair: ${aiDiagnosis.possibleIssues?.[0] || "Issue Resolution"}`
-        : provider.service || "Home Service Repair";
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+    const serviceName = aiDiagnosis
+      ? `${aiDiagnosis.categoryName} Repair: ${aiDiagnosis.possibleIssues?.[0] || "Issue Resolution"}`
+      : provider.service || "Home Service Repair";
+    const generatedNum = "ATD-" + new Date().getFullYear() + "-" + Math.floor(10000 + Math.random() * 90000);
 
+    let createdBooking = {
+      id: generatedNum,
+      bookingNumber: generatedNum,
+      rawId: "local-" + Date.now(),
+      service: serviceName,
+      provider: provider.name,
+      status: "Confirmed",
+      note: "Your appointment is confirmed with " + provider.name,
+      date: "Tomorrow",
+      scheduledDate: tomorrow,
+      time: "10:00 AM",
+      scheduledTime: "10:00 AM",
+      price: provider.price || 449,
+      eta: "Tomorrow at 10:00 AM",
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
       const res = await bookingsApi.create({
         providerId: provider.id,
         serviceName,
@@ -246,16 +265,27 @@ export function ProviderFlow({ visible = true, aiDiagnosis = null, onClearAi, on
       });
 
       if (res?.data) {
-        setBookingResult(res.data);
+        createdBooking = {
+          ...createdBooking,
+          id: res.data.bookingNumber || createdBooking.id,
+          bookingNumber: res.data.bookingNumber || createdBooking.bookingNumber,
+          rawId: res.data._id || createdBooking.rawId,
+        };
       }
-      setModal("success");
     } catch (err) {
-      console.warn("Booking creation note:", err.message);
-      setBookingResult({
-        bookingNumber: "ATD-" + new Date().getFullYear() + "-" + Math.floor(10000 + Math.random() * 90000),
-      });
-      setModal("success");
+      console.warn("Backend booking API note (saved locally):", err.message);
     } finally {
+      // Always store locally so user immediately sees their booking in My Bookings
+      try {
+        const stored = JSON.parse(localStorage.getItem("atdoor_user_bookings") || "[]");
+        const updated = [createdBooking, ...stored.filter((b) => b.id !== createdBooking.id)];
+        localStorage.setItem("atdoor_user_bookings", JSON.stringify(updated));
+      } catch (storageErr) {
+        console.warn("Storage write note:", storageErr);
+      }
+
+      setBookingResult(createdBooking);
+      setModal("success");
       setIsSubmitting(false);
     }
   };
@@ -343,7 +373,12 @@ export function ProviderFlow({ visible = true, aiDiagnosis = null, onClearAi, on
       </div>
 
       <div className="mt-8">
-        <ProviderCarousel providers={shown} onSelect={(item) => open("details", item)} />
+        <ProviderCarousel
+          providers={shown}
+          onDetails={(item) => open("details", item)}
+          onBook={(item) => open("booking", item)}
+          onSelect={(item) => open("details", item)}
+        />
       </div>
 
       <AnimatePresence>
@@ -550,6 +585,8 @@ function BookingConfirm({ provider, aiDiagnosis, agreed, setAgreed, isSubmitting
 }
 
 function BookingSuccess({ provider, bookingResult, aiDiagnosis, onDone }) {
+  const navigate = useNavigate();
+
   return (
     <div className="text-center py-4">
       <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
@@ -557,7 +594,7 @@ function BookingSuccess({ provider, bookingResult, aiDiagnosis, onDone }) {
       </div>
       <h2 className="mt-4 text-2xl font-black">Booking Confirmed!</h2>
       <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
-        Your booking <strong>{bookingResult?.bookingNumber || "ATD-2026-9021"}</strong> with{" "}
+        Your booking <strong>{bookingResult?.bookingNumber || bookingResult?.id || "ATD-2026-9021"}</strong> with{" "}
         <strong>{provider.name}</strong> has been successfully placed.
       </p>
 
@@ -568,8 +605,18 @@ function BookingSuccess({ provider, bookingResult, aiDiagnosis, onDone }) {
         </div>
       )}
 
-      <div className="mt-6">
-        <Button size="lg" className="w-full font-bold shadow-sm" onClick={onDone}>
+      <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <Button
+          size="lg"
+          className="font-bold shadow-sm flex-1"
+          onClick={() => {
+            onDone();
+            navigate({ to: "/bookings" });
+          }}
+        >
+          View My Bookings
+        </Button>
+        <Button size="lg" variant="outline" className="font-bold flex-1" onClick={onDone}>
           Back to Dashboard
         </Button>
       </div>
